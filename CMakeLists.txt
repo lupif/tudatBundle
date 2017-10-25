@@ -54,12 +54,14 @@ if(USE_PYGMO)
   list(APPEND BoostComponents python python3)
 endif()
 # Pick a boost version
-# set(BoostVersion 1.60.0)
-# set(BoostSHA1 7f56ab507d3258610391b47fef6b11635861175a)
+set(BoostVersion 1.65.1)
+set(BoostSHA1 4a5b0c3c1b1b9a4d6cb6a6cc395e903e76f76720)
+#set(BoostVersion 1.60.0)
+#set(BoostSHA1 7f56ab507d3258610391b47fef6b11635861175a)
 # set(BoostVersion 1.57.0)
 # set(BoostSHA1 e151557ae47afd1b43dc3fac46f8b04a8fe51c12)
-set(BoostVersion 1.53.0)
-set(BoostSHA1 e6dd1b62ceed0a51add3dda6f3fc3ce0f636a7f3)
+# set(BoostVersion 1.53.0)
+# set(BoostSHA1 e6dd1b62ceed0a51add3dda6f3fc3ce0f636a7f3)
 # set(BoostVersion 1.48.0)
 # set(BoostSHA1 27aced5086e96c6f7b2b684bda2bd515e115da35)
 
@@ -83,6 +85,10 @@ if(USE_OPTIMIZATION_PACKAGE OR USE_PAGMO)
   file(COPY "${CMAKE_SOURCE_DIR}/external/CMake/CMakeLists.pagmo2.modified.txt" DESTINATION "${CMAKE_SOURCE_DIR}/pagmo2")
   file(RENAME "${CMAKE_SOURCE_DIR}/pagmo2/CMakeLists.txt" "${CMAKE_SOURCE_DIR}/pagmo2/CMakeLists_original.txt")
   file(RENAME "${CMAKE_SOURCE_DIR}/pagmo2/CMakeLists.pagmo2.modified.txt" "${CMAKE_SOURCE_DIR}/pagmo2/CMakeLists.txt")
+
+  # Copy the config.hpp that was generated
+  file(MAKE_DIRECTORY "${CMAKE_SOURCE_DIR}/pagmo2/build" "${CMAKE_SOURCE_DIR}/pagmo2/build/include" "${CMAKE_SOURCE_DIR}/pagmo2/build/include/pagmo/")
+
 endif()
 
 # Build boost
@@ -137,13 +143,12 @@ if(USE_OPTIMIZATION_PACKAGE OR USE_PAGMO)
   message(STATUS "The things are: ${PAGMO_BUILD_PAGMO} ${PAGMO_BUILD_PYGMO} ${PAGMO_BUILD_TESTS} ${PAGMO_BUILD_EXAMPLES}")
   unset(pagmo_LIB_DEPENDS CACHE)
   add_subdirectory( "${PROJECTROOT}pagmo2/" )
-
-
-elseif(USE_PYGMO)
-    option(PAGMO_BUILD_PAGMO "Do not build PaGMO2" OFF)
-    option(PAGMO_BUILD_PYGMO "Do not build PaGMO2 with Python bindings" ON)
-    unset(pagmo_LIB_DEPENDS CACHE)
-    add_subdirectory( "${PROJECTROOT}pagmo2/" )
+  file(COPY "${CMAKE_BINARY_DIR}/pagmo2/include/pagmo/config.hpp" DESTINATION "${CMAKE_SOURCE_DIR}/pagmo2/build/include/pagmo/")
+elseif()
+  option(PAGMO_BUILD_PAGMO "Do not build PaGMO2" OFF)
+  option(PAGMO_BUILD_PYGMO "Do not build PaGMO2 with Python bindings" ON)
+  unset(pagmo_LIB_DEPENDS CACHE)
+  add_subdirectory( "${PROJECTROOT}pagmo2/" )
 endif()
 
 #
